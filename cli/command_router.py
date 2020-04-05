@@ -42,7 +42,7 @@ class CommandRouter:
         command_map = {
             'on': self.api.turn_on,
             'off': self.api.turn_off,
-            'toggle': self.api.toggle
+            'toggle': self.api.toggle_on
         }
         action = command_map[command]
         light = None

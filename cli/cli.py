@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 
-from command_router import CommandRouter, COMMANDS
+from cli.command_router import CommandRouter, COMMANDS
 
 def main():
     parser = argparse.ArgumentParser()
