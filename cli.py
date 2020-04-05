@@ -2,9 +2,11 @@
 import argparse
 from api import HueApi
 
+from command_router import CommandRouter
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', type=str)
+    parser.add_argument('command', choices=['list', 'on', 'off', 'toggle', 'brightness', 'color'])
     parser.add_argument('additional_args', nargs='*')
 
     api = HueApi()

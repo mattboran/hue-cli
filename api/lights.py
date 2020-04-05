@@ -43,10 +43,20 @@ class HueLight:
     def set_brightness(self, brightness):
         if isinstance(brightness, float):
             brightness = int(brightness * 254)
-        self.state.brightness = brightness
+        self.state.brightness = int(brightness)
 
     # Private methods
 
+    def fetch_current_state(self):
+        response = re.get(self.light_url)
+        if response.status_code >= 300:
+            raise FailedToGetState
+        state_dict = response.json().get('state', {})
+        if not state_dict:
+            raise FailedToGetState
+        self.state = LightState(state_dict)
+
+    # This is the reactive binding that gets called when a state value changes
     def set_state(self, state):
         try:
             state_url = self.light_url + "state/"
@@ -57,12 +67,3 @@ class HueLight:
             self.state = LightState(state, bind_to=self)
         except FailedToSetState:
             pass
-
-    def fetch_current_state(self):
-        response = re.get(self.light_url)
-        if response.status_code >= 300:
-            raise FailedToGetState
-        state_dict = response.json().get('state', {})
-        if not state_dict:
-            raise FailedToGetState
-        self.state = LightState(state_dict)
