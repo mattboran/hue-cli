@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from hue import HueApi
+from api import HueApi
 
 def main():
     parser = argparse.ArgumentParser()
