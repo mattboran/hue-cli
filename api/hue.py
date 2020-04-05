@@ -56,6 +56,17 @@ class HueApi:
             light.toggle_on()
 
     def set_brightness(self, brightness, index=None):
+        if isinstance(brightness, float):
+            brightness = int(brightness * 254)
+        elif isinstance(brightness, str):
+            if brightness == 'max':
+                brightness = 254
+            elif brightness == 'min':
+                brightness = 1
+            elif brightness == 'med':
+                brightness = 127
+            else:
+                brightness = 255
         for light in self.filter_lights(index):
             light.set_brightness(brightness)
 
@@ -67,5 +78,8 @@ class HueApi:
             b = color[2] / 255
         else:
             r, g, b = color
+        h, s, v = colorsys.rgb_to_hsv(r, g, b)
+        hue = int((2**16 - 1) * h)
+        saturation = int((2**8 - 1) * s)
         for light in self.filter_lights(index):
-            light.set_color(r, g, b)
+            light.set_color(hue, saturation)

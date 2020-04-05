@@ -2,55 +2,17 @@
 import argparse
 from api import HueApi
 
-from command_router import CommandRouter
+from command_router import CommandRouter, COMMANDS
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=['list', 'on', 'off', 'toggle', 'brightness', 'color'])
+    parser.add_argument('command', choices=COMMANDS)
     parser.add_argument('additional_args', nargs='*')
 
-    api = HueApi()
-    simple_command_map = {
-        'list': api.list_lights,
-        'on': api.turn_on,
-        'off': api.turn_off,
-        'toggle': api.toggle_on,
-    }
-
-    argument_command_map = {
-        'brightness': api.set_brightness,
-        'color': api.set_color
-    }
-
     args = parser.parse_args()
-    command = args.command
-    action = simple_command_map.get(command)
-    if action:
-        handle_simple_action(action, args.additional_args)
-    action = argument_command_map.get(command)
-    if action:
-        handle_argument_action(action, args.additional_args)
-
-def handle_simple_action(action, args):
-    try:
-        if len(args) > 0:
-            light = args[0]
-            action(light)
-        else:
-            action()
-    except ValueError:
-        print("Invalid argument passed to action")
-
-def handle_argument_action(action, args):
-    value = args[0]
-    try:
-        if len(args) > 1:
-            light = args[1]
-            action(value, light)
-        else:
-            action(value)
-    except ValueError:
-        print("Invalid argument passed to action")
+    api = HueApi()
+    router = CommandRouter(api)
+    router.route_command(args.command, args.additional_args)
 
 if __name__ == "__main__":
     main()

@@ -33,17 +33,12 @@ class HueLight:
         self.state.is_on = False
 
     # Provide values r, g, b between 0 and 1
-    def set_color(self, r, g, b):
-        h, s, v = colorsys.rgb_to_hsv(r, g, b)
-        hue = int((2**16 - 1) * h)
-        saturation = int((2**8 - 1) * s)
+    def set_color(self, hue, saturation):
         self.state.color = hue, saturation
 
     # Brightness should be between 0 and 254, but also accept between 0 and 1
     def set_brightness(self, brightness):
-        if isinstance(brightness, float):
-            brightness = int(brightness * 254)
-        self.state.brightness = int(brightness)
+        self.state.brightness = brightness
 
     # Private methods
 
