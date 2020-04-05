@@ -1,15 +1,23 @@
-COMMANDS = ['list', 'on', 'off', 'toggle', 'brightness', 'color']
+from api import HueApi
+
+COMMANDS = ['init', 'list', 'on', 'off', 'toggle', 'brightness', 'color']
 
 class CommandRouter:
-    def __init__(self, api):
-        self.api = api
 
     def route_command(self, command, args):
+        if command == 'init':
+            try:
+                self.api = HueApi(bridge_ip_address=args[0])
+            except Exception as e:
+                print(e.msg)
+                return
+        else:
+            self.api = HueApi()
         if command == 'list':
             self.api.list_lights()
         elif command in ['on', 'off', 'toggle']:
             self.handle_no_value_command(command, args)
-        else:
+        elif command in ['brightness', 'color']:
             self.handle_command_with_value(command, args)
 
     def handle_no_value_command(self, command, args):

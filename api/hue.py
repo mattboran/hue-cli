@@ -1,26 +1,51 @@
 import colorsys
 import json
 import os
+import pickle
+import uuid
+
 import requests as re
 import webcolors
 
 from api.lights import HueLight
-
-BRIDGE_IP_ADDRESS = os.getenv('HUE_BRIDGE_IP_ADDRESS')
-USER_NAME = os.getenv('HUE_USER_NAME')
+from api.exceptions import (UninitializedException,
+                            ButtonNotPressedException,
+                            DevicetypeException)
 
 
 class HueApi:
 
     # TODO: - Add register user
-    def __init__(self, bridge_ip_address=BRIDGE_IP_ADDRESS, user_name=USER_NAME):
-        self.bridge_ip_address = bridge_ip_address
-        self.user_name = user_name
+    def __init__(self, bridge_ip_address=None):
+        if not bridge_ip_address:
+            try:
+                cached = open('.pickle', 'rb')
+                loaded = pickle.load(cached)
+                cached.close()
+                bridge_ip_address = loaded.get('bridge_ip_address')
+                user_name = loaded.get('user_name')
+            except FileNotFoundError:
+                raise UninitializedException
+        else:
+            url = f'http://{bridge_ip_address}/api'
+            payload = {'devicetype': 'hue_cli'}
+            response = re.post(url, json=payload)
+            response = response.json()[0]
+            error = response.get('error')
+            if error:
+                if error['type'] == 1:
+                    raise DevicetypeException
+                else:
+                    raise ButtonNotPressedException
+            user_name = response.get('success').get('username')
+            with open('.pickle', 'wb') as pickle_file:
+                cache = {
+                    'bridge_ip_address': bridge_ip_address,
+                    'user_name': user_name
+                }
+                pickle.dump(cache, pickle_file)
+        self.base_url = f'http://{bridge_ip_address}/api/{user_name}/lights'
         self.lights = self.get_all_lights()
-
-    @property
-    def base_url(self):
-        return f"http://{self.bridge_ip_address}/api/{self.user_name}/lights"
 
     def get_all_lights(self):
         url = self.base_url
