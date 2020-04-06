@@ -49,7 +49,7 @@ class HueLight:
         state_dict = response.json().get('state', {})
         if not state_dict:
             raise FailedToGetState
-        self.state = LightState(state_dict)
+        self.state = LightState(state_dict, bind_to=self)
 
     # This is the reactive binding that gets called when a state value changes
     def set_state(self, state):

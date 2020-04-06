@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.1.0",
     author="Matt Boran",
     author_email="mattboran@gmail.com",
-    description="A script to be run from Xcode to lint files as you make changes",
+    description="Python client for Philips Hue bulbs, along with CLI",
     long_description="To come",
     long_description_content_type="text/markdown",
     url="https://github.com/mattboran/hue-cli",
@@ -26,7 +26,7 @@ setuptools.setup(
     python_requires='>3.6.0',
     entry_points={
         'console_scripts': [
-            'hue = cli:main'
+            'hue = main:main'
         ]
     }
 )
