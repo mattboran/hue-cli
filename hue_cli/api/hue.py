@@ -7,10 +7,10 @@ import uuid
 import requests as re
 import webcolors
 
-from api.lights import HueLight
-from api.exceptions import (UninitializedException,
-                            ButtonNotPressedException,
-                            DevicetypeException)
+from hue_cli.api.lights import HueLight
+from hue_cli.api.exceptions import (UninitializedException,
+                                    ButtonNotPressedException,
+                                    DevicetypeException)
 
 
 class HueApi:

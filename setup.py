@@ -26,7 +26,7 @@ setuptools.setup(
     python_requires='>3.6.0',
     entry_points={
         'console_scripts': [
-            'hue = main:main'
+            'hue = hue_cli.cli:run'
         ]
     }
 )

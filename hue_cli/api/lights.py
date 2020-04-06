@@ -1,8 +1,8 @@
 import colorsys
 import requests as re
 
-from api.exceptions import FailedToGetState, FailedToSetState
-from api.state import LightState
+from hue_cli.api.exceptions import FailedToGetState, FailedToSetState
+from hue_cli.api.state import LightState
 
 class HueLight:
 
@@ -50,5 +50,5 @@ class HueLight:
             if status_code >= 300:
                 raise FailedToSetState
             self.state = LightState(state, bind_to=self)
-        except FailedToSetState:
-            pass
+        except FailedToSetState as e:
+            print(e.msg)
