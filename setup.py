@@ -3,6 +3,8 @@ import setuptools
 # with open("README.md", "r") as fh:
 #     long_description = fh.read()
 
+tests_require = ['pytest', 'pytest-cov']
+
 setuptools.setup(
     name="hue_cli",
     version="0.1.0",
@@ -24,7 +26,10 @@ setuptools.setup(
         'webcolors>=1.11'
     ],
     setup_requires=['pytest-runner'],
-    tests_require=['pytest'],
+    tests_require=tests_require,
+    extras_require={
+        'test': tests_require
+    },
     python_requires='>3.6.0',
     entry_points={
         'console_scripts': [
