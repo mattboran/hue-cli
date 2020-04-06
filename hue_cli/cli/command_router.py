@@ -1,5 +1,3 @@
-from hue_cli import HueApi
-
 COMMANDS = [
     'init',
     'debug',
@@ -12,23 +10,25 @@ COMMANDS = [
 
 class CommandRouter:
 
+    def __init__(self, api):
+        self.api = api
+
     def route_command(self, command, args):
         if command == 'init':
-            self.handle_init()
+            try:
+                self.api.create_new_user()
+                self.api.save_api_key()
+            except Exception as e:
+                print(f"Initialization error: {e.msg}")
             return
-        self.api = HueApi()
+        self.api.load_existing()
+        self.api.fetch_lights()
         if command in ['list', 'debug']:
             self.handle_no_arg_command(command)
         elif command in ['on', 'off', 'toggle']:
             self.handle_no_value_command(command, args)
         elif command in ['brightness', 'color']:
             self.handle_command_with_value(command, args)
-
-    def handle_init(self, args):
-        try:
-            self.api = HueApi(bridge_ip_address=args[0])
-        except Exception as e:
-            print(f"Initialization error: {e.msg}")
 
     def handle_no_arg_command(self, command):
         command_map = {

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 
+from hue_cli import HueApi
 from .command_router import CommandRouter, COMMANDS
 
 def run():
@@ -9,5 +10,5 @@ def run():
     parser.add_argument('additional_args', nargs='*')
 
     args = parser.parse_args()
-    router = CommandRouter()
+    router = CommandRouter(HueApi())
     router.route_command(args.command, args.additional_args)
