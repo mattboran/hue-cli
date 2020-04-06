@@ -23,7 +23,6 @@ class HueLight:
         return string + status_string
 
     def toggle_on(self):
-        self.fetch_current_state()
         self.state.is_on = not self.state.is_on
 
     def set_on(self):
@@ -41,15 +40,6 @@ class HueLight:
         self.state.brightness = brightness
 
     # Private methods
-
-    def fetch_current_state(self):
-        response = re.get(self.light_url)
-        if response.status_code >= 300:
-            raise FailedToGetState
-        state_dict = response.json().get('state', {})
-        if not state_dict:
-            raise FailedToGetState
-        self.state = LightState(state_dict, bind_to=self)
 
     # This is the reactive binding that gets called when a state value changes
     def set_state(self, state):
