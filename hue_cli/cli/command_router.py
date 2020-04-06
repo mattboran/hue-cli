@@ -1,4 +1,4 @@
-from hue_cli.api import HueApi
+from hue_cli import HueApi
 
 COMMANDS = [
     'init',
