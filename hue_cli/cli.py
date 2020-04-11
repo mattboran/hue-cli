@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 
-from hue_cli import HueApi
+from hue_api import HueApi
 from .command_router import CommandRouter, COMMANDS
 
 def run():

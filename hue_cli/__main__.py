@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from hue_cli.cli import run
+from cli import run
 
 def main():
     run()
