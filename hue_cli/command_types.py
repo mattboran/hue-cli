@@ -1,6 +1,7 @@
 class IdentifiableCommand:
     def __init__(self, api, actions=[], args=[], init_command=None):
         self.args = args
+        self.api = api
         if isinstance(actions, str):
             actions = [actions]
         self.actions = [getattr(api, action) for action in actions]
@@ -13,13 +14,27 @@ class IdentifiableCommand:
             action(indices)
 
     def get_light_indices(self, args):
-        int_args = []
+        int_args = set([0])
+        non_int_args = []
+        if isinstance(args, str):
+            args = [args]
         for arg in args:
             try:
-                int_args.append(int(arg))
+                int_args.add(int(arg))
             except ValueError:
+                non_int_args.append(arg)
                 pass
-        return int_args
+        for arg in non_int_args:
+            for light in self.api.lights:
+                if arg.lower() in light.name.lower():
+                    int_args.add(light.id)
+                    continue
+            for group in self.api.groups:
+                if arg.lower() in group.name.lower():
+                    for light in group.lights:
+                        int_args.add(light.id)
+                        continue
+        return list(int_args)
 
 
 class ValueCommand(IdentifiableCommand):
