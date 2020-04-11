@@ -1,12 +1,22 @@
-COMMANDS = [
-    'init',
-    'debug',
-    'list',
-    'on',
-    'off',
-    'toggle',
-    'brightness',
-    'color']
+from hue_cli.command_types import (IdentifiableCommand,
+                                   ValueCommand,
+                                   EnumeratedCommand,
+                                   InitializingCommand)
+
+# Init is handled differently from the other commands
+COMMANDS = {
+    'init': (InitializingCommand, ['create_new_user', 'save_api_key']),
+    'load': (InitializingCommand, ['load_existing', 'fetch_lights']),
+    'debug': (IdentifiableCommand, 'print_debug_info'),
+    'list': (EnumeratedCommand, {
+        'lights': 'list_lights'
+    }),
+    'on': (IdentifiableCommand, 'turn_on'),
+    'off': (IdentifiableCommand, 'turn_off'),
+    'toggle': (IdentifiableCommand, 'toggle_on'),
+    'brightness': (ValueCommand, 'set_brightness'),
+    'color': (ValueCommand, 'set_color')
+}
 
 class CommandRouter:
 
@@ -14,50 +24,13 @@ class CommandRouter:
         self.api = api
 
     def route_command(self, command, args):
+        api = self.api
+        initializer = 'init' if command == 'init' else 'load'
+        Type, methods = COMMANDS.get(initializer)
+        init_command = Type(api, actions=methods, args=args)
         if command == 'init':
-            try:
-                self.api.create_new_user()
-                self.api.save_api_key()
-            except Exception as e:
-                print(f"Initialization error: {e.msg}")
+            init_command()
             return
-        self.api.load_existing()
-        self.api.fetch_lights()
-        if command in ['list', 'debug']:
-            self.handle_no_arg_command(command)
-        elif command in ['on', 'off', 'toggle']:
-            self.handle_no_value_command(command, args)
-        elif command in ['brightness', 'color']:
-            self.handle_command_with_value(command, args)
-
-    def handle_no_arg_command(self, command):
-        command_map = {
-            'list': self.api.list_lights,
-            'debug': self.api.print_debug_info
-        }
-        action = command_map[command]
-        action()
-
-    def handle_no_value_command(self, command, args):
-        command_map = {
-            'on': self.api.turn_on,
-            'off': self.api.turn_off,
-            'toggle': self.api.toggle_on
-        }
-        action = command_map[command]
-        light = None
-        if len(args) == 1:
-            light = args[0]
-        action(index=light)
-
-    def handle_command_with_value(self, command, args):
-        command_map = {
-            'brightness': self.api.set_brightness,
-            'color': self.api.set_color
-        }
-        action = command_map[command]
-        light = None
-        value = args[0]
-        if len(args) == 2:
-            light = args[1]
-        action(value, index=light)
+        Type, methods = COMMANDS.get(command)
+        command = Type(api, actions=methods, args=args, init_command=init_command)
+        command()

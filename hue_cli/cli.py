@@ -6,7 +6,8 @@ from .command_router import CommandRouter, COMMANDS
 
 def run():
     parser = argparse.ArgumentParser()
-    parser.add_argument('command', choices=COMMANDS)
+    commands = [command for command in COMMANDS.keys()]
+    parser.add_argument('command', choices=commands)
     parser.add_argument('additional_args', nargs='*')
 
     args = parser.parse_args()
