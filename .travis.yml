@@ -9,6 +9,6 @@ install:
   - pip install ".[test]" .
   - python setup.py install
 # command to run tests
-script: pytest
-after_success:
-    - codecov
+# script: pytest
+# after_success:
+# - codecov
