@@ -9,7 +9,8 @@ COMMANDS = {
     'load': (InitializingCommand, ['load_existing', 'fetch_lights']),
     'debug': (IdentifiableCommand, 'print_debug_info'),
     'list': (EnumeratedCommand, {
-        'lights': 'list_lights'
+        'lights': 'list_lights',
+        '__default': 'list_lights'
     }),
     'on': (IdentifiableCommand, 'turn_on'),
     'off': (IdentifiableCommand, 'turn_off'),
@@ -25,12 +26,13 @@ class CommandRouter:
 
     def route_command(self, command, args):
         api = self.api
-        initializer = 'init' if command == 'init' else 'load'
-        Type, methods = COMMANDS.get(initializer)
-        init_command = Type(api, actions=methods, args=args)
         if command == 'init':
+            Type, methods = COMMANDS.get('init')
+            init_command = Type(api, actions=methods, args=args)
             init_command()
             return
+        Type, methods = COMMANDS.get('load')
+        init_command = Type(api, actions=methods)
         Type, methods = COMMANDS.get(command)
         command = Type(api, actions=methods, args=args, init_command=init_command)
         command()
