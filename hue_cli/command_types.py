@@ -14,7 +14,7 @@ class IdentifiableCommand:
             action(indices)
 
     def get_light_indices(self, args):
-        int_args = set([0])
+        int_args = set()
         non_int_args = []
         if isinstance(args, str):
             args = [args]
@@ -42,7 +42,6 @@ class ValueCommand(IdentifiableCommand):
         value = self.args.pop(0)
         indices = self.get_light_indices(self.args)
         action = self.actions[0]
-        indices = self.get_light_indices(self.args)
         action(value, indices)
 
 
@@ -52,7 +51,11 @@ class EnumeratedCommand(IdentifiableCommand):
             key = args.pop(0)
         except IndexError:
             key = '__default'
-        super().__init__(api, actions=[actions[key]], args=args, init_command=init_command)
+        try:
+            actions = [actions[key]]
+        except KeyError:
+            actions = [actions[key + 's']]
+        super().__init__(api, actions=actions, args=args, init_command=init_command)
 
 
 class InitializingCommand(IdentifiableCommand):

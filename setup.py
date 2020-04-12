@@ -3,8 +3,7 @@ import setuptools
 # with open("README.md", "r") as fh:
 #     long_description = fh.read()
 
-# tests_require = ['pytest', 'pytest-cov']
-tests_require = []
+tests_require = ['pytest', 'pytest-cov']
 
 setuptools.setup(
     name="hue_cli",

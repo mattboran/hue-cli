@@ -28,12 +28,12 @@ class CommandRouter:
     def route_command(self, command, args):
         api = self.api
         if command == 'init':
-            Type, methods = COMMANDS.get('init')
-            init_command = Type(api, actions=methods, args=args)
+            InitType, init_methods = COMMANDS.get('init')
+            init_command = InitType(api, actions=init_methods, args=args)
             init_command()
             return
-        Type, methods = COMMANDS.get('load')
-        init_command = Type(api, actions=methods)
+        InitType, init_methods = COMMANDS.get('load')
+        init_command = InitType(api, actions=init_methods)
         Type, methods = COMMANDS.get(command)
         command = Type(api, actions=methods, args=args, init_command=init_command)
         command()
