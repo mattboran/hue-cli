@@ -25,15 +25,15 @@ class IdentifiableCommand:
                 non_int_args.append(arg)
                 pass
         for arg in non_int_args:
-            for light in self.api.lights:
-                if arg.lower() in light.name.lower():
-                    int_args.add(light.id)
-                    continue
             for group in self.api.groups:
                 if arg.lower() in group.name.lower():
                     for light in group.lights:
                         int_args.add(light.id)
                         continue
+            for light in self.api.lights:
+                if arg.lower() in light.name.lower():
+                    int_args.add(light.id)
+                    continue
         return list(int_args)
 
 
@@ -51,10 +51,11 @@ class EnumeratedCommand(IdentifiableCommand):
             key = args.pop(0)
         except IndexError:
             key = '__default'
-        try:
-            actions = [actions[key]]
-        except KeyError:
-            actions = [actions[key + 's']]
+        action = actions.get(key) or actions.get(key + 's')
+        if isinstance(action, str):
+            actions = [action] if action else []
+        else:
+            actions = action
         super().__init__(api, actions=actions, args=args, init_command=init_command)
 
 
