@@ -7,14 +7,14 @@ tests_require = ['pytest', 'pytest-cov']
 
 setuptools.setup(
     name="hue_cli",
-    version="0.1.0",
+    version="0.2.0",
     author="Matt Boran",
     author_email="mattboran@gmail.com",
     description="CLI forr Philips Hue bulbs",
     long_description="To come",
     long_description_content_type="text/markdown",
     url="https://github.com/mattboran/hue-cli",
-    download_url="https://github.com/mattboran/hue-cli/releases/download/0.1.0/hue_cli-0.1.0-py3-none-any.whl",
+    download_url="https://github.com/mattboran/hue-cli/releases/download/0.2.0/hue_cli-0.1.0-py3-none-any.whl",
     packages=setuptools.find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -22,7 +22,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
     ],
     install_requires=[
-        'hue_py'
+        'hue_py>=0.2.1'
     ],
     setup_requires=['pytest-runner'],
     tests_require=tests_require,
