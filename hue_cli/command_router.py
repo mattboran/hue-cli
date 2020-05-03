@@ -6,11 +6,13 @@ from hue_cli.command_types import (IdentifiableCommand,
 # Init is handled differently from the other commands
 COMMANDS = {
     'init': (InitializingCommand, ['create_new_user', 'save_api_key']),
-    'load': (InitializingCommand, ['load_existing', 'fetch_lights', 'fetch_groups']),
+    'load': (InitializingCommand, ['load_existing', 'fetch_lights', 'fetch_groups', 'fetch_scenes']),
     'debug': (IdentifiableCommand, 'print_debug_info'),
     'list': (EnumeratedCommand, {
         'lights': 'list_lights',
         'groups': 'list_groups',
+        "scenes": "list_scenes",
+        'scene groups': 'list_scene_groups',
         '__default': 'list_lights'
     }),
     'on': (IdentifiableCommand, 'turn_on'),

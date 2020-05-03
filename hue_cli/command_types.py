@@ -47,10 +47,7 @@ class ValueCommand(IdentifiableCommand):
 
 class EnumeratedCommand(IdentifiableCommand):
     def __init__(self, api, actions={}, args=[], init_command=None):
-        try:
-            key = args.pop(0)
-        except IndexError:
-            key = '__default'
+        key = ' '.join(args) or '__default'
         action = actions.get(key) or actions.get(key + 's')
         if isinstance(action, str):
             actions = [action] if action else []
